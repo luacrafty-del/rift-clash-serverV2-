@@ -73,11 +73,16 @@ class Match {
     this.phaseEndsAt = Date.now() + BAN_TURN_MS; // fresh per-turn deadline, broadcast below
     this._broadcastAll();
     if (this.phaseTimer) clearTimeout(this.phaseTimer);
+    const player = this._playerById(turn.playerId);
+    // Bots act quickly (4-5s in) instead of sitting through the whole turn
+    // timer like a stalled human would — real players still get the full
+    // BAN_TURN_MS grace period before auto-ban kicks in on their behalf.
+    const delay = (player && player.isBot) ? (4000 + Math.random() * 1000) : BAN_TURN_MS;
     this.phaseTimer = setTimeout(() => {
       if (this.phase === 'ban' && this.banIndex < this.banOrder.length && this.banOrder[this.banIndex] === turn) {
         this._autoBan(turn);
       }
-    }, BAN_TURN_MS);
+    }, delay);
   }
 
   handleBan(playerId, hero) {
@@ -113,11 +118,13 @@ class Match {
     this.phaseEndsAt = Date.now() + PICK_TURN_MS; // fresh per-turn deadline, broadcast below
     this._broadcastAll();
     if (this.phaseTimer) clearTimeout(this.phaseTimer);
+    const player = this._playerById(currentPlayerId);
+    const delay = (player && player.isBot) ? (4000 + Math.random() * 1000) : PICK_TURN_MS;
     this.phaseTimer = setTimeout(() => {
       if (this.phase === 'pick' && this.pickOrder[this.pickIndex] === currentPlayerId && !this.picks[currentPlayerId]) {
         this._autoPick(currentPlayerId);
       }
-    }, PICK_TURN_MS);
+    }, delay);
   }
 
   handlePick(playerId, hero) {

@@ -1,0 +1,14 @@
+{
+  "name": "rift-clash-server",
+  "version": "1.0.0",
+  "description": "Authoritative matchmaking + realtime game server for Arena/Rift Clash (5v5 MOBA)",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
